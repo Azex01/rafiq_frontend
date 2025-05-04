@@ -1,0 +1,220 @@
+/* Journal Container */
+.journal-container {
+  height: calc(100% - 90px);
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-light);
+  overflow: hidden;
+}
+
+.view-description {
+  color: var(--text-medium);
+  margin-top: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  font-size: 14px;
+}
+
+/* Journal Tabs */
+.journal-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--neutral-light);
+  background-color: #f9f9f9;
+}
+
+.journal-tab {
+  flex: 1;
+  padding: var(--spacing-md);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-medium);
+  transition: all 0.2s ease;
+}
+
+.journal-tab:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--primary-color);
+}
+
+.journal-tab.active {
+  border-bottom-color: var(--primary-color);
+  color: var(--primary-color);
+  background-color: white;
+}
+
+/* Journal Content */
+.journal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.journal-section {
+  display: none;
+  padding: var(--spacing-lg);
+}
+
+.journal-section.active {
+  display: block;
+}
+
+.journal-section h3 {
+  margin-bottom: var(--spacing-sm);
+  color: var(--primary-dark);
+}
+
+.section-description {
+  color: var(--text-medium);
+  margin-bottom: var(--spacing-lg);
+  font-size: 14px;
+}
+
+/* Entry List */
+.entry-list {
+  margin-bottom: var(--spacing-lg);
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--neutral-light);
+  border-radius: var(--border-radius-md);
+}
+
+.entry {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--neutral-light);
+  position: relative;
+}
+
+.entry:last-child {
+  border-bottom: none;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.entry-date {
+  font-size: 12px;
+  color: var(--text-medium);
+}
+
+.entry-title {
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+.entry-trigger {
+  font-style: italic;
+  color: var(--accent-warning);
+  margin-bottom: var(--spacing-xs);
+}
+
+.entry-text {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.entry-actions-menu {
+  position: absolute;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+}
+
+.entry-actions-menu button {
+  background: none;
+  border: none;
+  color: var(--text-medium);
+  cursor: pointer;
+  padding: 0;
+  margin-left: var(--spacing-xs);
+}
+
+.entry-actions-menu button:hover {
+  color: var(--primary-color);
+}
+
+/* New Entry Form */
+.new-entry {
+  background-color: var(--primary-light);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+}
+
+.entry-field {
+  margin-bottom: var(--spacing-md);
+}
+
+.entry-field label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 600;
+}
+
+.entry-field input {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--neutral-medium);
+  border-radius: var(--border-radius-sm);
+}
+
+textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--neutral-medium);
+  border-radius: var(--border-radius-md);
+  resize: vertical;
+  min-height: 100px;
+  font-size: 16px;
+  direction: rtl;
+}
+
+.entry-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--spacing-md);
+}
+
+.save-entry {
+  background-color: var(--accent-success);
+}
+
+.save-entry:hover {
+  background-color: #219653;
+}
+
+/* Journal Footer */
+.journal-footer {
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--neutral-light);
+  text-align: center;
+}
+
+.export-button {
+  background-color: var(--neutral-dark);
+}
+
+.export-button:hover {
+  background-color: var(--text-dark);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .journal-section {
+    padding: var(--spacing-md);
+  }
+
+  .journal-tab {
+    padding: var(--spacing-sm);
+    font-size: 14px;
+  }
+
+  .new-entry {
+    padding: var(--spacing-sm);
+  }
+}

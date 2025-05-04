@@ -1,0 +1,285 @@
+.recovery-timer {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.timer-display {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: var(--primary-dark);
+}
+
+.timer-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+  flex-wrap: wrap; /* Allow buttons to wrap on very small screens */
+}
+
+.danger-button {
+  background-color: #f44336;
+  color: white;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+}
+
+.danger-button:hover {
+  background-color: #d32f2f;
+}
+
+.timer-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px; /* Reduced from 100px for better mobile spacing */
+}
+
+.glow-circle {
+  width: 260px; /* Default size for medium screens */
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff8dc, #ffe082);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 30px rgba(255, 193, 7, 0.5);
+  transition: box-shadow 0.4s ease, width 0.3s ease, height 0.3s ease;
+  margin-bottom: 17px;
+}
+
+.days-count {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  line-height: 1.6;
+}
+
+#recovery-time-details {
+  font-size: 22px;
+  text-align: center;
+  padding: 0 10px;
+}
+
+.timer-message {
+  margin-top: 16px;
+  font-size: 16px;
+  color: var(--text-medium);
+  text-align: center;
+  padding: 0 15px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: var(--shadow-medium);
+}
+
+.modal-content h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: var(--primary-dark);
+}
+
+.modal-content textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--neutral-medium);
+  resize: vertical;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Floating quotes container and quotes */
+.quote-column {
+  width: 240px; /* Default width for large screens */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.quote-column.right {
+  order: 2;
+}
+
+.quote-column.left {
+  order: 0;
+}
+
+.floating-quote {
+  background: #fff;
+  border-radius: 14px;
+  padding: 6px 14px;
+  font-size: 14px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+  opacity: 0.9;
+  white-space: normal;
+}
+
+/* Animation effects */
+.fade-in {
+  animation: fadeIn 0.8s forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.8s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+#floating-quotes-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 10px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .quote-column {
+    width: 200px; /* Slightly smaller on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .timer-visual {
+    margin-top: 30px;
+  }
+
+  .glow-circle {
+    width: 220px; /* Smaller on tablets */
+    height: 220px;
+  }
+
+  .days-count {
+    font-size: 26px;
+  }
+
+  #recovery-time-details {
+    font-size: 20px;
+  }
+
+  .quote-column {
+    width: 160px; /* More condensed quotes on tablets */
+  }
+
+  .floating-quote {
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .timer-visual {
+    margin-top: 20px;
+  }
+
+  .glow-circle {
+    width: 180px; /* Much smaller on mobile phones */
+    height: 180px;
+  }
+
+  .days-count {
+    font-size: 22px;
+  }
+
+  #recovery-time-details {
+    font-size: 16px;
+  }
+
+  .timer-message {
+    font-size: 14px;
+  }
+
+  /* Hide quote columns on very small screens to focus on the timer */
+  .quote-column {
+    display: none;
+  }
+
+  /* Ensure the modal fits properly on small screens */
+  .modal-content {
+    padding: 16px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 360px) {
+  .glow-circle {
+    width: 150px;
+    height: 150px;
+  }
+
+  .days-count {
+    font-size: 18px;
+  }
+
+  #recovery-time-details {
+    font-size: 14px;
+  }
+}

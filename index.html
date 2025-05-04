@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon" />
+    <title>رفيق</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/chat.css" />
+    <link rel="stylesheet" href="styles/journal.css" />
+    <link rel="stylesheet" href="styles/habits.css" />
+    <link rel="stylesheet" href="styles/timer.css" />
+    <link rel="stylesheet" href="styles/bouncing.css" />
+    <link rel="stylesheet" href="styles/commitment.css" />
+    <!-- <link rel="stylesheet" href="styles/timer.css" />
+    <link rel="stylesheet" href="styles/commitment.css" /> -->
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <div class="logo">
+          <h1>رفيق</h1>
+        </div>
+        <nav class="main-nav">
+          <ul>
+            <li data-view="chat" class="active">
+              <i class="fas fa-comments"></i> المحادثة
+            </li>
+            <li data-view="journal"><i class="fas fa-book"></i> المذكرات</li>
+            <li data-view="habits"><i class="fas fa-tasks"></i> العادات</li>
+            <li data-view="timer">
+              <i class="fas fa-stopwatch"></i> مؤقت التعافي
+            </li>
+            <li data-view="commitment">
+              <i class="fas fa-file-signature"></i> وثيقة الالتزام
+            </li>
+            <li data-view="notifications">
+              <i class="fas fa-bell"></i> الإشعارات
+            </li>
+            <li class="support-nav-item">
+              <i class="fas fa-hand-holding-heart"></i> دعمك يفرق
+            </li>
+
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                // Add event listener to notifications list item
+                const notificationsItem = document.querySelector(
+                  'li[data-view="notifications"]'
+                );
+                notificationsItem.addEventListener("click", function (e) {
+                  e.preventDefault(); // Prevent default navigation
+                  window.open(
+                    "https://buymeacoffee.com/tobegoodmao?status=1",
+                    "_blank"
+                  );
+                });
+
+                // Add event listener to support list item
+                const supportItem = document.querySelector(".support-nav-item");
+                supportItem.addEventListener("click", function (e) {
+                  e.preventDefault(); // Prevent default navigation
+                  window.open(
+                    "https://buymeacoffee.com/tobegoodmao?status=1",
+                    "_blank"
+                  );
+                });
+              });
+            </script>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <p id="nah">رفيق معك في رحلة التعافي</p>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <!-- AI Chat View -->
+        <section id="chat-view" class="view active-view">
+          <div class="view-header">
+            <h2>المحادثة مع رفيق</h2>
+          </div>
+          <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+              <div class="message assistant">
+                <div class="message-content">
+                  مرحباً بك في رفيق! أنا هنا لمساعدتك في رحلة التعافي. كيف
+                  يمكنني دعمك اليوم؟
+                </div>
+              </div>
+            </div>
+            <div class="chat-input-container">
+              <textarea
+                id="chat-input"
+                placeholder="اكتب رسالتك هنا..."
+              ></textarea>
+              <button id="send-message" class="send-button">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Journal View (Hidden initially) -->
+        <!-- Journal View -->
+        <section id="journal-view" class="view">
+          <div class="view-header">
+            <h2>المذكرات الشخصية</h2>
+            <p class="view-description">
+              سجل أفكارك ومشاعرك بحرية تامة. جميع المذكرات تُحفظ محلياً على
+              جهازك.
+            </p>
+          </div>
+          <div class="journal-container">
+            <div class="journal-tabs">
+              <button class="journal-tab active" data-tab="free">
+                كتابة حرة
+              </button>
+              <button class="journal-tab" data-tab="relapse">
+                سجل الانتكاسات
+              </button>
+            </div>
+
+            <div class="journal-content">
+              <!-- Free Writing Section -->
+              <div class="journal-section active" id="free-section">
+                <h3>كتابة حرة</h3>
+                <p class="section-description">
+                  مساحة للتعبير عن أفكارك ومشاعرك بحرية تامة.
+                </p>
+
+                <div class="entry-list" id="free-entries">
+                  <!-- Entries will be added here dynamically -->
+                </div>
+
+                <div class="new-entry">
+                  <div class="entry-field">
+                    <label for="free-title">العنوان</label>
+                    <input
+                      type="text"
+                      id="free-title"
+                      placeholder="عنوان المذكرة"
+                    />
+                  </div>
+                  <textarea
+                    id="free-input"
+                    placeholder="اكتب أفكارك هنا..."
+                  ></textarea>
+                  <div class="entry-actions">
+                    <button id="save-free" class="save-entry">حفظ</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Relapse Log Section -->
+              <div class="journal-section" id="relapse-section">
+                <h3>سجل الانتكاسات</h3>
+                <p class="section-description">
+                  سجل ظروف الانتكاسة للتعلم منها. فهم المحفزات والظروف يساعدك
+                  على تجنبها مستقبلاً.
+                </p>
+
+                <div class="entry-list" id="relapse-entries">
+                  <!-- Entries will be added here dynamically -->
+                </div>
+
+                <div class="new-entry">
+                  <div class="entry-field">
+                    <label for="relapse-date">التاريخ</label>
+                    <input type="date" id="relapse-date" />
+                  </div>
+                  <div class="entry-field">
+                    <label for="relapse-trigger">المحفز أو السبب</label>
+                    <input
+                      type="text"
+                      id="relapse-trigger"
+                      placeholder="ما الذي حفزك؟"
+                    />
+                  </div>
+                  <textarea
+                    id="relapse-input"
+                    placeholder="كيف حدثت الانتكاسة وما الذي تعلمته منها؟"
+                  ></textarea>
+                  <div class="entry-actions">
+                    <button id="save-relapse" class="save-entry">حفظ</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="journal-footer"></div>
+          </div>
+        </section>
+
+        <!-- Habit Tracker View (Hidden initially) -->
+        <!-- Habit Tracker View -->
+        <section id="habits-view" class="view">
+          <div class="view-header">
+            <h2>متابعة العادات</h2>
+            <p class="view-description">
+              تتبع عاداتك الإيجابية التي تدعم رحلة التعافي. اختر 3-5 عادات
+              للتركيز عليها.
+            </p>
+          </div>
+          <div class="habits-container">
+            <div class="habits-header">
+              <h3>عاداتي الإيجابية</h3>
+              <button id="add-habit-btn" class="primary-button">
+                <i class="fas fa-plus"></i> إضافة عادة جديدة
+              </button>
+            </div>
+
+            <div class="habits-list" id="habits-list">
+              <!-- Habits will be added here dynamically -->
+              <div class="empty-habits-message" id="empty-habits-message">
+                لم تقم بإضافة أي عادات بعد. انقر على "إضافة عادة جديدة" للبدء.
+              </div>
+            </div>
+
+            <!-- Add Habit Modal -->
+            <div class="modal" id="add-habit-modal">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h3>إضافة عادة جديدة</h3>
+                  <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="habit-name">اسم العادة</label>
+                    <input
+                      type="text"
+                      id="habit-name"
+                      placeholder="مثال: النوم المبكر، التمارين الرياضية"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="habit-description">وصف العادة (اختياري)</label>
+                    <textarea
+                      id="habit-description"
+                      placeholder="لماذا هذه العادة مهمة لرحلة التعافي؟"
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="habit-icon">رمز العادة</label>
+                    <div class="icon-selection">
+                      <button class="icon-option" data-icon="fa-bed">
+                        <i class="fas fa-bed"></i>
+                      </button>
+                      <button class="icon-option" data-icon="fa-running">
+                        <i class="fas fa-running"></i>
+                      </button>
+                      <button class="icon-option" data-icon="fa-book">
+                        <i class="fas fa-book"></i>
+                      </button>
+                      <button class="icon-option" data-icon="fa-praying-hands">
+                        <i class="fas fa-praying-hands"></i>
+                      </button>
+                      <button class="icon-option" data-icon="fa-water">
+                        <i class="fas fa-water"></i>
+                      </button>
+                      <button class="icon-option" data-icon="fa-mobile-alt">
+                        <i class="fas fa-mobile-alt"></i>
+                      </button>
+                      <button class="icon-option" data-icon="fa-users">
+                        <i class="fas fa-users"></i>
+                      </button>
+                      <button class="icon-option" data-icon="fa-heart">
+                        <i class="fas fa-heart"></i>
+                      </button>
+                    </div>
+                    <input type="hidden" id="habit-icon" value="fa-bed" />
+                  </div>
+                  <div class="form-actions">
+                    <button class="cancel-button close-modal">إلغاء</button>
+                    <button id="save-habit-btn" class="primary-button">
+                      حفظ العادة
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="habits-stats">
+              <div class="stats-card">
+                <div class="stats-title">نسبة الإنجاز الأسبوعية</div>
+                <div class="stats-value" id="weekly-completion">0%</div>
+              </div>
+              <div class="stats-card">
+                <div class="stats-title">أطول سلسلة</div>
+                <div class="stats-value" id="longest-streak">0 أيام</div>
+              </div>
+              <div class="stats-card">
+                <div class="stats-title">العادات النشطة</div>
+                <div class="stats-value" id="active-habits">0/5</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Recovery Timer View (Hidden initially)
+        <section id="timer-view" class="view">
+          <div class="view-header">
+            <h2>مؤقت التعافي</h2>
+          </div>
+          <div class="timer-container">
+            Timer content will be added here through JavaScript -->
+        <!-- </div>
+        </section>  -->
+
+        <section id="timer-view" class="view">
+          <div class="timer-visual">
+            <div class="glow-circle">
+              <div class="days-count">
+                🌞<br />
+                <span id="recovery-days">0</span> يوم
+              </div>
+            </div>
+            <div id="recovery-time-details" class="time-details">
+              0 ساعة و 0 دقيقة و 0 ثانية
+            </div>
+            <p class="timer-message">رحلة النور بدأت ✨ استمر يوماً بعد يوم</p>
+          </div>
+
+          <div class="timer-actions">
+            <button id="start-recovery-btn" class="primary-button">
+              بدأ التعافي
+            </button>
+            <button
+              id="reset-recovery-btn"
+              class="danger-button"
+              style="display: none"
+            >
+              انتكست
+            </button>
+          </div>
+          <div id="floating-quotes-container"></div>
+        </section>
+
+        <!-- Commitment Document View (Hidden initially) -->
+        <!-- Commitment Document View -->
+        <!-- Commitment Document View -->
+        <section id="commitment-view" class="view">
+          <div class="view-header">
+            <h2>وثيقة الالتزام</h2>
+            <p class="view-description">
+              اكتب التزامك الشخصي بالتعافي هنا. راجع وثيقتك يومياً لتذكيرك
+              بالدوافع وراء قرارك.
+            </p>
+          </div>
+
+          <div class="commitment-container">
+            <!-- Welcome Screen -->
+            <div id="commitment-welcome" class="commitment-welcome">
+              <h3>وثيقة الالتزام الشخصي</h3>
+              <p>
+                اكتب فيها كيف أثر الإدمان سلباً على حياتك وما هي الفوائد التي
+                ستجنيها من التعافي. يمكنك أيضاً إضافة صورة تحفيزية تذكرك بهدفك.
+              </p>
+              <button id="create-commitment-btn" class="primary-button">
+                <i class="fas fa-pen"></i> إنشاء وثيقة الالتزام
+              </button>
+            </div>
+
+            <!-- Commitment Form/View -->
+            <div id="commitment-document" class="commitment-document hidden">
+              <div class="commitment-header">
+                <div id="daily-quote" class="daily-quote">
+                  كل يوم جديد هو فرصة لاختيار نفسك من جديد.
+                </div>
+              </div>
+
+              <div class="commitment-content">
+                <div class="commitment-section">
+                  <div class="section-title">
+                    <i class="fas fa-image"></i> صورة تحفيزية
+                  </div>
+
+                  <div class="image-upload-section">
+                    <div class="image-upload-container">
+                      <label
+                        for="motivation-image"
+                        class="image-upload-label"
+                        id="image-upload-label"
+                      >
+                        <i class="fas fa-camera"></i>
+                        <span>انقر لاختيار صورة تحفيزية</span>
+                      </label>
+                      <input
+                        type="file"
+                        id="motivation-image"
+                        class="image-upload-input"
+                        accept="image/*"
+                      />
+                    </div>
+
+                    <div class="image-preview" id="image-preview">
+                      <img id="preview-image" src="" alt="صورة تحفيزية" />
+                      <div class="image-actions">
+                        <button class="image-action-btn" id="replace-image">
+                          <i class="fas fa-sync-alt"></i> استبدال
+                        </button>
+                        <button
+                          class="image-action-btn delete"
+                          id="delete-image"
+                        >
+                          <i class="fas fa-trash"></i> حذف
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="commitment-section">
+                  <div class="section-title">
+                    <i class="fas fa-brain"></i> كيف أثر الإدمان سلباً على حياتي
+                  </div>
+                  <textarea
+                    id="negative-impact"
+                    class="commitment-textarea"
+                    placeholder="صف التأثير الشخصي للإدمان..."
+                  ></textarea>
+                </div>
+
+                <div class="commitment-section">
+                  <div class="section-title">
+                    <i class="fas fa-seedling"></i> الفوائد التي سأجنيها من
+                    التعافي
+                  </div>
+                  <textarea
+                    id="recovery-benefits"
+                    class="commitment-textarea"
+                    placeholder="تخيل حياتك بعد التعافي..."
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="commitment-actions">
+                <button id="edit-commitment-btn" class="edit-btn hidden">
+                  <i class="fas fa-edit"></i> تعديل
+                </button>
+                <button
+                  id="save-commitment-btn"
+                  class="save-btn primary-button"
+                >
+                  <i class="fas fa-save"></i> حفظ الالتزام
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <!-- ✅ 1. HTML: نافذة الانتكاسة -->
+    <div id="relapse-modal" class="modal">
+      <div class="modal-content">
+        <h3>لا بأس بالانتكاسات</h3>
+        <p>أنت إنسان، والخطوة الأهم إنك رجعت من جديد ✨</p>
+
+        <label for="relapse-note">ما شعورك الآن؟ (اختياري)</label>
+        <textarea
+          id="relapse-note"
+          placeholder="مثلاً: شعرت بوحدة، كان يوم صعب..."
+        ></textarea>
+
+        <div class="modal-actions">
+          <button class="cancel-button close-modal">إغلاق</button>
+          <button class="primary-button" id="confirm-relapse-btn">تأكيد</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/main.js"></script>
+    <script src="scripts/chat.js" type="module"></script>
+    <script src="scripts/journal.js"></script>
+    <script src="scripts/habits.js"></script>
+    <script src="scripts/timer.js"></script>
+    <script src="scripts/bouncing.js"></script>
+    <script src="scripts/commitment.js"></script>
+    <!-- <script src="scripts/timer.js"></script>
+    <script src="scripts/commitment.js"></script> -->
+  </body>
+</html>

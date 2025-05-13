@@ -483,6 +483,8 @@
               migrateGuestJournalsToBackend(data.token);
               migrateCommitmentToBackend(data.token);
               migrateGuestHabitsToBackend(data.token);
+              migrateRecoveryTimerToBackend(data.token); // <<< ADD THIS LINE
+
               // Show success animation and confetti
               createConfetti();
 
@@ -513,6 +515,46 @@
           });
       });
 
+      // Function to migrate recovery time to backend :
+      function migrateRecoveryTimerToBackend(token) {
+        const recoveryStartDate = localStorage.getItem("recoveryStartDate");
+
+        if (!recoveryStartDate) {
+          console.log("No guest recovery timer data to migrate.");
+          return;
+        }
+
+        fetch("https://rafiq-backend.onrender.com/recovery", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ recoveryStartDate }),
+        })
+          .then((res) => {
+            if (!res.ok) {
+              return res.json().then((errData) => {
+                console.error(
+                  `Failed to migrate recovery timer: ${
+                    errData.message || res.status
+                  }`
+                );
+                throw new Error("Failed to migrate recovery timer");
+              });
+            }
+            return res.json();
+          })
+          .then((data) => {
+            console.log("✅ Recovery timer data migrated:", data);
+            localStorage.removeItem("recoveryStartDate"); // Remove after successful migration
+          })
+          .catch((err) => {
+            console.error("❌ Error migrating recovery timer data:", err);
+            // Decide if you want to keep local data on error
+          });
+      }
+
       // Function to migrate local habits to backend :
       function migrateGuestHabitsToBackend(token) {
         const habits = JSON.parse(localStorage.getItem("habits")) || [];
@@ -531,6 +573,10 @@
                 name: habit.name,
                 description: habit.description,
                 icon: habit.icon,
+                createdAt: habit.createdAt, // <<< ADD THIS LINE
+                completionLog: habit.completionLog,
+                streak: habit.streak,
+                longestStreak: habit.longestStreak,
               }),
             })
           )

@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const payload = { name, description, icon };
       if (localStorage.getItem("token")) {
         // تعديل في قاعدة البيانات
-        fetch(`http://localhost:3001/habits/${editHabitId}`, {
+        fetch(`https://rafeeq1.netlify.app//habits/${editHabitId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🟢 مستخدم مسجل: أرسل للسيرفر
     if (localStorage.getItem("token")) {
-      fetch("http://localhost:3001/habits", {
+      fetch("https://rafeeq1.netlify.app//habits", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Show loading indicator maybe?
     habitsList.innerHTML = '<div class="loading">جاري تحميل العادات...</div>'; // Example loader
 
-    fetch("http://localhost:3001/habits", {
+    fetch("https://rafeeq1.netlify.app//habits", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const deleteBtn = habitCard.querySelector(".habit-delete");
     deleteBtn.addEventListener("click", () => {
       if (localStorage.getItem("token")) {
-        fetch(`http://localhost:3001/habits/${habit.id}`, {
+        fetch(`https://rafeeq1.netlify.app//habits/${habit.id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -609,15 +609,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (localStorage.getItem("token")) {
       // ✅ مستخدم مسجل → إرسال لـ backend (Unified Endpoint)
-      fetch(`http://localhost:3001/habits/${habitId}/toggle/${dateStr}`, {
-        // Use the new endpoint
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        // No body needed as info is in the URL
-      })
+      fetch(
+        `https://rafeeq1.netlify.app//habits/${habitId}/toggle/${dateStr}`,
+        {
+          // Use the new endpoint
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          // No body needed as info is in the URL
+        }
+      )
         .then(async (res) => {
           // Make async to parse error JSON
           if (!res.ok) {

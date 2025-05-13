@@ -461,7 +461,7 @@
         // Add this to the end of the script section in login.html
         // Replace the existing fetch call in the form submit event listener
 
-        fetch("https://rafeeq1.netlify.app//login", {
+        fetch("https://rafiq-backend.onrender.com/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -521,7 +521,7 @@
 
         Promise.all(
           habits.map((habit) =>
-            fetch("https://rafeeq1.netlify.app//habits", {
+            fetch("https://rafiq-backend.onrender.com/habits", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -560,7 +560,7 @@
         const local = JSON.parse(localStorage.getItem("commitmentData"));
         if (!local) return;
 
-        fetch("https://rafeeq1.netlify.app//commitment", {
+        fetch("https://rafiq-backend.onrender.com/commitment", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -621,7 +621,7 @@
 
         Promise.all(
           allEntries.map((entry) =>
-            fetch("https://rafeeq1.netlify.app//journal", {
+            fetch("https://rafiq-backend.onrender.com/journal", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

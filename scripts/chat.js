@@ -1,6 +1,6 @@
 // This is using 50 but it is costly
 
-// const API_URL = "https://rafeeq1.netlify.app//ask"; // نرسل إلى السيرفر المحلي
+// const API_URL = "https://rafiq-backend.onrender.com/ask"; // نرسل إلى السيرفر المحلي
 
 // const systemMessage = {
 //   role: "system",
@@ -147,7 +147,7 @@
 //     showTyping();
 
 //     try {
-//       const response = await fetch("https://rafeeq1.netlify.app//ask", {
+//       const response = await fetch("https://rafiq-backend.onrender.com/ask", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ message: content }),

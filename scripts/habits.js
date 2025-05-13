@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const payload = { name, description, icon };
       if (localStorage.getItem("token")) {
         // تعديل في قاعدة البيانات
-        fetch(`https://rafeeq1.netlify.app//habits/${editHabitId}`, {
+        fetch(`https://rafiq-backend.onrender.com/habits/${editHabitId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🟢 مستخدم مسجل: أرسل للسيرفر
     if (localStorage.getItem("token")) {
-      fetch("https://rafeeq1.netlify.app//habits", {
+      fetch("https://rafiq-backend.onrender.com/habits", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Show loading indicator maybe?
     habitsList.innerHTML = '<div class="loading">جاري تحميل العادات...</div>'; // Example loader
 
-    fetch("https://rafeeq1.netlify.app//habits", {
+    fetch("https://rafiq-backend.onrender.com/habits", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const deleteBtn = habitCard.querySelector(".habit-delete");
     deleteBtn.addEventListener("click", () => {
       if (localStorage.getItem("token")) {
-        fetch(`https://rafeeq1.netlify.app//habits/${habit.id}`, {
+        fetch(`https://rafiq-backend.onrender.com/habits/${habit.id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -610,7 +610,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (localStorage.getItem("token")) {
       // ✅ مستخدم مسجل → إرسال لـ backend (Unified Endpoint)
       fetch(
-        `https://rafeeq1.netlify.app//habits/${habitId}/toggle/${dateStr}`,
+        `https://rafiq-backend.onrender.com/habits/${habitId}/toggle/${dateStr}`,
         {
           // Use the new endpoint
           method: "PUT",

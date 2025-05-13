@@ -101,11 +101,12 @@
 }
 
 .habit-actions {
-  position: absolute;
-  top: var(--spacing-md);
-  left: var(--spacing-md);
   display: flex;
-  gap: var(--spacing-xs);
+  flex-direction: column; /* هذا يحط القلم تحت الزبالة */
+  gap: 16px; /* مسافة بينهم */
+  position: absolute;
+  top: 8px;
+  left: 8px;
 }
 
 .habit-action-btn {
@@ -377,13 +378,13 @@
     position: relative;
   }
 
-  .habit-icon {
+  /* .habit-icon {
     width: 42px;
     height: 42px;
     margin-right: var(--spacing-md);
     margin-left: 0;
     flex-shrink: 0;
-  }
+  } */
 
   .habit-info {
     flex: 1;
@@ -404,11 +405,11 @@
   /* Position action buttons in top-right corner */
   .habit-actions {
     position: absolute;
-    top: 0;
-    right: 0;
-    left: auto;
+    top: var(--spacing-md);
+    left: var(--spacing-md);
+    right: auto;
     display: flex;
-    gap: var(--spacing-xs);
+    gap: 20px;
   }
 
   /* Compact but readable streak calendar */
@@ -480,10 +481,10 @@
     margin-right: 24px; /* Make room for action buttons */
   }
 
-  .habit-icon {
+  /* .habit-icon {
     width: 36px;
     height: 36px;
-  }
+  } */
 
   .habit-name {
     font-size: 15px;

@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showTyping();
 
     try {
-      const response = await fetch("http://localhost:3001/ask", {
+      const response = await fetch("https://rafiq-backend.onrender.com/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: content }),

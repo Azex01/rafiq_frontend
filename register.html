@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>إنشاء حساب - رفيق</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --secondary-color: #0ea5e9;
+        --accent-color: #7c3aed;
+        --success-color: #10b981;
+        --error-color: #ef4444;
+        --text-color: #1e293b;
+        --text-light: #64748b;
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        --gradient: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+      }
+
+      body {
+        font-family: "Cairo", sans-serif;
+        background-color: var(--bg-color);
+        background-image: radial-gradient(#e0f2fe 1px, transparent 1px),
+          radial-gradient(#e0f2fe 1px, transparent 1px);
+        background-size: 40px 40px;
+        background-position: 0 0, 20px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 450px;
+        background: var(--card-bg);
+        border-radius: 24px;
+        box-shadow: var(--card-shadow);
+        padding: 40px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo-container {
+        text-align: center;
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .logo {
+        width: 80px;
+        height: 80px;
+        background: var(--card-bg);
+        border-radius: 22px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 12px;
+        margin-bottom: 16px;
+        transform: translateY(10px);
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      h1 {
+        color: black;
+        font-size: 2.2rem;
+        margin-bottom: 5px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      p.subtitle {
+        color: black;
+        margin-bottom: 40px;
+        font-weight: 300;
+        font-size: 1.1rem;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+        position: relative;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .input-container {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+      }
+
+      input {
+        width: 100%;
+        padding: 16px 16px 16px 45px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-family: "Cairo", sans-serif;
+        color: var(--text-color);
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+      }
+
+      input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+      }
+
+      .input-hint {
+        margin-top: 6px;
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+
+      .btn {
+        width: 100%;
+        background: var(--gradient);
+        color: white;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        position: relative;
+        overflow: hidden;
+        font-family: "Cairo", sans-serif;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          rgba(255, 255, 255, 0.2),
+          rgba(255, 255, 255, 0)
+        );
+        transform: translateY(-50%);
+        transition: transform 0.6s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
+      }
+
+      .btn:hover::after {
+        transform: translateY(0);
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .footer-link {
+        text-align: center;
+        margin-top: 24px;
+        color: var(--text-light);
+        font-size: 0.95rem;
+      }
+
+      .footer-link a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .footer-link a:hover {
+        color: var(--accent-color);
+        text-decoration: underline;
+      }
+
+      .alert {
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(-10px);
+        animation: fadeIn 0.3s forwards;
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .alert i {
+        margin-left: 12px;
+        font-size: 1.2rem;
+      }
+
+      .error-box {
+        background-color: rgba(254, 226, 226, 0.7);
+        color: var(--error-color);
+        border-left: 4px solid var(--error-color);
+      }
+
+      .success-box {
+        background-color: rgba(209, 250, 229, 0.7);
+        color: var(--success-color);
+        border-left: 4px solid var(--success-color);
+      }
+
+      .password-toggle {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      .strength-meter {
+        height: 5px;
+        border-radius: 5px;
+        background-color: #e2e8f0;
+        position: relative;
+        margin-top: 10px;
+        overflow: hidden;
+        display: none;
+      }
+
+      .strength-meter-fill {
+        height: 100%;
+        border-radius: 5px;
+        transition: width 0.3s, background-color 0.3s;
+      }
+
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="content">
+        <div class="logo-container">
+          <div class="logo">
+            <img src="icon.png" alt="Rafiq Logo" width="100%" />
+          </div>
+          <h1>إنشاء حساب جديد</h1>
+          <p class="subtitle">انضم إلى رحلة التعافي مع رفيق</p>
+        </div>
+
+        <div id="errorBox" class="alert error-box" style="display: none">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="errorText"></span>
+        </div>
+
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="name">الاسم</label>
+            <div class="input-container">
+              <input
+                type="text"
+                id="name"
+                placeholder="أدخل اسمك بالكامل"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">البريد الإلكتروني</label>
+            <div class="input-container">
+              <input
+                type="email"
+                id="email"
+                placeholder="example@domain.com"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">كلمة المرور</label>
+            <div class="input-container">
+              <input
+                type="password"
+                id="password"
+                placeholder="أدخل كلمة مرور قوية"
+                required
+              />
+              <button type="button" class="password-toggle" id="togglePassword">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="strength-meter" id="strengthMeter">
+              <div class="strength-meter-fill" id="strengthFill"></div>
+            </div>
+            <div class="input-hint">
+              يفضل استخدام 8 أحرف على الأقل مع أرقام ورموز
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">تأكيد كلمة المرور</label>
+            <div class="input-container">
+              <input
+                type="password"
+                id="confirmPassword"
+                placeholder="أعد إدخال كلمة المرور"
+                required
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                id="toggleConfirmPassword"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn" id="submitBtn">
+            <span id="btnText">إنشاء حساب</span>
+            <div id="btnLoader" style="display: none">
+              <i class="fas fa-spinner fa-spin"></i>
+            </div>
+          </button>
+        </form>
+
+        <div class="footer-link">
+          لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Password visibility toggle
+      const togglePassword = document.getElementById("togglePassword");
+      const toggleConfirmPassword = document.getElementById(
+        "toggleConfirmPassword"
+      );
+      const password = document.getElementById("password");
+      const confirmPassword = document.getElementById("confirmPassword");
+      const strengthMeter = document.getElementById("strengthMeter");
+      const strengthFill = document.getElementById("strengthFill");
+      const form = document.getElementById("registerForm");
+      const errorBox = document.getElementById("errorBox");
+      const errorText = document.getElementById("errorText");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const btnLoader = document.getElementById("btnLoader");
+
+      // Toggle password visibility
+      togglePassword.addEventListener("click", function () {
+        const type =
+          password.getAttribute("type") === "password" ? "text" : "password";
+        password.setAttribute("type", type);
+        this.querySelector("i").classList.toggle("fa-eye");
+        this.querySelector("i").classList.toggle("fa-eye-slash");
+      });
+
+      toggleConfirmPassword.addEventListener("click", function () {
+        const type =
+          confirmPassword.getAttribute("type") === "password"
+            ? "text"
+            : "password";
+        confirmPassword.setAttribute("type", type);
+        this.querySelector("i").classList.toggle("fa-eye");
+        this.querySelector("i").classList.toggle("fa-eye-slash");
+      });
+
+      // Password strength meter
+      password.addEventListener("focus", function () {
+        strengthMeter.style.display = "block";
+      });
+
+      password.addEventListener("input", function () {
+        const val = password.value;
+        const strength = calculatePasswordStrength(val);
+
+        strengthFill.style.width = strength + "%";
+
+        if (strength < 33) {
+          strengthFill.style.backgroundColor = "#ef4444";
+        } else if (strength < 66) {
+          strengthFill.style.backgroundColor = "#f59e0b";
+        } else {
+          strengthFill.style.backgroundColor = "#10b981";
+        }
+      });
+
+      function calculatePasswordStrength(password) {
+        let strength = 0;
+
+        if (password.length > 6) strength += 20;
+        if (password.length > 10) strength += 20;
+        if (/[A-Z]/.test(password)) strength += 20;
+        if (/[0-9]/.test(password)) strength += 20;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+
+        return strength;
+      }
+
+      // Floating animation on input focus
+      const inputs = document.querySelectorAll("input");
+      inputs.forEach((input) => {
+        input.addEventListener("focus", function () {
+          this.parentElement.style.transform = "translateY(-3px)";
+          this.parentElement.style.boxShadow =
+            "0 6px 15px rgba(37, 99, 235, 0.1)";
+        });
+
+        input.addEventListener("blur", function () {
+          this.parentElement.style.transform = "translateY(0)";
+          this.parentElement.style.boxShadow = "none";
+        });
+      });
+
+      // Create confetti effect
+      function createConfetti() {
+        const confettiCount = 100;
+        const container = document.querySelector("body");
+
+        for (let i = 0; i < confettiCount; i++) {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+
+          const colors = [
+            "#2563eb",
+            "#10b981",
+            "#f59e0b",
+            "#7c3aed",
+            "#ef4444",
+          ];
+          confetti.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+
+          confetti.style.left = Math.random() * 100 + "vw";
+          confetti.style.top = -10 + "px";
+          confetti.style.transform = `scale(${Math.random()})`;
+
+          const size = Math.random() * 10 + 5;
+          confetti.style.width = `${size}px`;
+          confetti.style.height = `${size}px`;
+
+          container.appendChild(confetti);
+
+          // Animation
+          const animation = confetti.animate(
+            [
+              {
+                transform: `translate(0, 0) rotate(0deg)`,
+                opacity: 1,
+              },
+              {
+                transform: `translate(${Math.random() * 100 - 50}px, ${
+                  Math.random() * 800 + 600
+                }px) rotate(${Math.random() * 360}deg)`,
+                opacity: 0,
+              },
+            ],
+            {
+              duration: Math.random() * 3000 + 2000,
+              easing: "cubic-bezier(0.1, 0.9, 0.2, 1)",
+            }
+          );
+
+          animation.onfinish = () => {
+            confetti.remove();
+          };
+        }
+      }
+
+      // Form submission handling
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        errorBox.style.display = "none";
+
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        if (!name || !email || !password || !confirmPassword) {
+          showError("يرجى تعبئة جميع الحقول");
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          showError("كلمات المرور غير متطابقة");
+          return;
+        }
+
+        // Animation for button loading state
+        btnText.style.display = "none";
+        btnLoader.style.display = "block";
+        submitBtn.disabled = true;
+
+        // Simulate a delay for demo purposes
+        setTimeout(() => {
+          // Regular form submission
+          fetch("http://localhost:3001/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, email, password }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.message === "تم التسجيل بنجاح") {
+                // Show success animation and confetti
+                createConfetti();
+
+                // Create a success box
+                const successBox = document.createElement("div");
+                successBox.className = "alert success-box";
+                successBox.innerHTML =
+                  '<i class="fas fa-check-circle"></i><span>تم إنشاء الحساب بنجاح! جارٍ تحويلك...</span>';
+
+                // Insert before the form
+                form.parentNode.insertBefore(successBox, form);
+
+                // Hide form
+                form.style.display = "none";
+
+                // Redirect after delay
+                setTimeout(() => {
+                  window.location.href = "login.html";
+                }, 2500);
+              } else {
+                showError(data.message || "حدث خطأ غير متوقع");
+                resetSubmitButton();
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              showError("فشل الاتصال بالخادم. حاول مرة أخرى.");
+              resetSubmitButton();
+            });
+        }, 1000);
+      });
+
+      function showError(message) {
+        errorText.textContent = message;
+        errorBox.style.display = "flex";
+        errorBox.style.animation = "none";
+        setTimeout(() => {
+          errorBox.style.animation = "fadeIn 0.3s forwards";
+        }, 10);
+      }
+
+      function resetSubmitButton() {
+        btnText.style.display = "block";
+        btnLoader.style.display = "none";
+        submitBtn.disabled = false;
+      }
+
+      // Initial animation
+      window.addEventListener("load", function () {
+        document.querySelector(".container").style.opacity = "0";
+        setTimeout(() => {
+          document.querySelector(".container").style.opacity = "1";
+          document.querySelector(".container").style.transform =
+            "translateY(0)";
+        }, 200);
+      });
+    </script>
+  </body>
+</html>

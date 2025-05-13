@@ -109,11 +109,41 @@ document.addEventListener("DOMContentLoaded", () => {
   let animationFrame = null; // للتحكم في التحريك
 
   // الحصول على تاريخ بدء التعافي من localStorage
+  // function loadRecoveryDate() {
+  //   const savedISO = window.appHelpers.getData("recoveryStartDate");
+  //   if (savedISO) {
+  //     recoveryStartDate = new Date(savedISO);
+  //     return true;
+  //   }
+  //   return false;
+  // }
+  // الحصول على تاريخ بدء التعافي من localStorage
   function loadRecoveryDate() {
-    const savedISO = window.appHelpers.getData("recoveryStartDate");
+    // const savedISO = window.appHelpers.getData("recoveryStartDate"); // Old line
+    const savedISO = localStorage.getItem("recoveryStartDate"); // *** MODIFIED LINE ***
     if (savedISO) {
-      recoveryStartDate = new Date(savedISO);
-      return true;
+      try {
+        // Add validation in case localStorage has invalid data
+        const date = new Date(savedISO);
+        if (!isNaN(date.getTime())) {
+          // Check if date is valid
+          recoveryStartDate = date;
+          return true;
+        } else {
+          console.warn(
+            "Bouncing Quotes: Invalid date found in localStorage for recoveryStartDate."
+          );
+          localStorage.removeItem("recoveryStartDate"); // Clean up invalid data
+          return false;
+        }
+      } catch (e) {
+        console.error(
+          "Bouncing Quotes: Error parsing date from localStorage.",
+          e
+        );
+        localStorage.removeItem("recoveryStartDate"); // Clean up invalid data
+        return false;
+      }
     }
     return false;
   }

@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const habitDescInput = document.getElementById("habit-description");
   const habitIconInput = document.getElementById("habit-icon");
   const iconOptions = document.querySelectorAll(".icon-option");
+  let editHabitId = null;
 
   // Stats elements
   const weeklyCompletionEl = document.getElementById("weekly-completion");
@@ -53,26 +54,49 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to initialize habit tracker
+  // function initializeHabitTracker() {
+  //   // Load habits from localStorage
+  //   const habits = window.appHelpers.getData("habits") || [];
+
+  //   // Show or hide empty state message
+  //   if (habits.length === 0) {
+  //     if (emptyHabitsMessage) {
+  //       emptyHabitsMessage.style.display = "block";
+  //     }
+  //   } else {
+  //     if (emptyHabitsMessage) {
+  //       emptyHabitsMessage.style.display = "none";
+  //     }
+
+  //     // Render habits
+  //     renderHabits(habits);
+  //   }
+
+  //   // Update stats
+  //   updateHabitStats();
+  // }
   function initializeHabitTracker() {
-    // Load habits from localStorage
-    const habits = window.appHelpers.getData("habits") || [];
-
-    // Show or hide empty state message
-    if (habits.length === 0) {
-      if (emptyHabitsMessage) {
-        emptyHabitsMessage.style.display = "block";
-      }
+    if (localStorage.getItem("token")) {
+      // ✅ مستخدم مسجل → حمّل من السيرفر
+      fetchAndRenderHabits();
     } else {
-      if (emptyHabitsMessage) {
-        emptyHabitsMessage.style.display = "none";
+      // 🟡 زائر → حمّل من localStorage بعد فلترة userId
+      const habits = getFilteredLocalHabits();
+
+      if (habits.length === 0) {
+        if (emptyHabitsMessage) {
+          emptyHabitsMessage.style.display = "block";
+        }
+      } else {
+        if (emptyHabitsMessage) {
+          emptyHabitsMessage.style.display = "none";
+        }
+
+        renderHabits(habits);
       }
 
-      // Render habits
-      renderHabits(habits);
+      updateHabitStats(habits);
     }
-
-    // Update stats
-    updateHabitStats();
   }
 
   // Function to open add habit modal
@@ -80,11 +104,17 @@ document.addEventListener("DOMContentLoaded", function () {
     if (addHabitModal) {
       addHabitModal.classList.add("active");
 
-      // Clear form fields
+      // 🧼 Reset edit mode
+      editHabitId = null;
+      saveHabitBtn.textContent = "حفظ العادة";
+      addHabitModal.querySelector(".modal-header h3").textContent =
+        "اضافة عادة جديدة";
+
+      // 🧼 Clear form fields
       habitNameInput.value = "";
       habitDescInput.value = "";
 
-      // Reset icon selection
+      // 🧼 Reset icon selection
       iconOptions.forEach((opt) => opt.classList.remove("selected"));
       iconOptions[0].classList.add("selected");
       habitIconInput.value = iconOptions[0].getAttribute("data-icon");
@@ -108,52 +138,122 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Get existing habits
-    const habits = window.appHelpers.getData("habits") || [];
+    if (editHabitId !== null) {
+      const payload = { name, description, icon };
+      if (localStorage.getItem("token")) {
+        // تعديل في قاعدة البيانات
+        fetch(`http://localhost:3001/habits/${editHabitId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ name, description, icon }),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("فشل في التحديث");
+            return res.json();
+          })
+          .then((data) => {
+            closeModal();
+            fetchAndRenderHabits();
+            updateHabitStats();
+          })
+          .catch((err) => {
+            console.error("❌ Error updating habit:", err);
+            alert("فشل في تحديث العادة");
+          });
+      } else {
+        // تعديل في localStorage
+        const habits = getFilteredLocalHabits(); // Get current guest habits
+        const index = habits.findIndex(
+          (h) =>
+            String(h.id) === String(editHabitId) ||
+            String(h._id) === String(editHabitId)
+        );
+        if (index !== -1) {
+          // Update the specific habit
+          habits[index] = { ...habits[index], name, description, icon };
 
-    // Check if we already have 5 habits
-    if (habits.length >= 5) {
-      alert(
-        "لا يمكنك إضافة أكثر من 5 عادات. يرجى حذف إحدى العادات الحالية أولاً."
-      );
-      closeModal();
+          window.appHelpers.saveData("habits", habits);
+          closeModal();
+          renderHabits(habits);
+          updateHabitStats(habits);
+        } else {
+          console.error("Guest habit to edit not found:", editHabitId);
+          alert("خطأ: لم يتم العثور على العادة المراد تعديلها.");
+        }
+      }
+
+      editHabitId = null;
+      saveHabitBtn.textContent = "حفظ العادة";
       return;
     }
 
-    // Create new habit object
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // 🟢 مستخدم مسجل: أرسل للسيرفر
+    if (localStorage.getItem("token")) {
+      fetch("http://localhost:3001/habits", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ name, description, icon }),
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("فشل في الإضافة");
+          return res.json();
+        })
+        .then((data) => {
+          closeModal();
+          fetchAndRenderHabits(); // نحصل على العادات من السيرفر ونعرضها
+          updateHabitStats(); // لو في حاجة لتحديث الإحصائيات
+        })
+        .catch((err) => {
+          console.error("❌ Error:", err);
+          alert("فشل في إضافة العادة");
+        });
+    } else {
+      // 🟡 زائر → احفظ في localStorage
+      const habits = getFilteredLocalHabits();
+      if (habits.length >= 5) {
+        alert("لا يمكنك إضافة أكثر من 5 عادات.");
+        closeModal();
+        return;
+      }
 
-    const newHabit = {
-      id: Date.now(),
-      name: name,
-      description: description,
-      icon: icon,
-      createdAt: today.toISOString(),
-      streak: 0,
-      longestStreak: 0,
-      completionLog: {}, // Object with dates as keys and completion status as values
-    };
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-    // Add new habit to array
-    habits.push(newHabit);
+      const newHabit = {
+        id: Date.now(),
+        name,
+        description,
+        icon,
+        createdAt: today.toISOString(),
+        streak: 0,
+        longestStreak: 0,
+        completionLog: {},
+      };
 
-    // Save to localStorage
-    window.appHelpers.saveData("habits", habits);
-
-    // Close modal
-    closeModal();
-
-    // Refresh habits display
-    renderHabits(habits);
-
-    // Hide empty message
-    if (emptyHabitsMessage) {
-      emptyHabitsMessage.style.display = "none";
+      habits.push(newHabit);
+      window.appHelpers.saveData("habits", habits);
+      closeModal();
+      renderHabits(habits);
+      updateHabitStats(habits);
     }
 
-    // Update stats
-    updateHabitStats();
+    saveHabitBtn.textContent = "حفظ العادة";
+    editHabitId = null;
+  }
+
+  function getFilteredLocalHabits() {
+    const allHabits = window.appHelpers.getData("habits") || [];
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const currentUserId = user?._id;
+
+    return allHabits.filter((h) => !h.userId || h.userId === currentUserId);
   }
 
   // Function to render habits
@@ -165,9 +265,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Render each habit
     habits.forEach((habit) => {
+      // ⭐️ أضفنا هذا السطر ليتوافق _id مع باقي الكود
+      habit.id = habit._id || habit.id;
+
       const habitElement = createHabitElement(habit);
       habitsList.appendChild(habitElement);
     });
+  }
+
+  function fetchAndRenderHabits() {
+    // Show loading indicator maybe?
+    habitsList.innerHTML = '<div class="loading">جاري تحميل العادات...</div>'; // Example loader
+
+    fetch("http://localhost:3001/habits", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`فشل جلب العادات (${res.status})`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data.habits && Array.isArray(data.habits)) {
+          if (data.habits.length === 0) {
+            if (emptyHabitsMessage) emptyHabitsMessage.style.display = "block";
+            habitsList.innerHTML = ""; // Clear loading/list
+          } else {
+            if (emptyHabitsMessage) emptyHabitsMessage.style.display = "none";
+            renderHabits(data.habits);
+          }
+          updateHabitStats(data.habits); // Pass fetched habits
+        } else {
+          console.warn("No habits array found in API response:", data);
+          if (emptyHabitsMessage) emptyHabitsMessage.style.display = "block";
+          habitsList.innerHTML = ""; // Clear loading/list
+          updateHabitStats([]); // Update with empty array
+        }
+      })
+      .catch((err) => {
+        console.error("❌ Error loading habits:", err);
+        habitsList.innerHTML = `<div class="error">فشل تحميل العادات: ${err.message}</div>`; // Show error
+        updateHabitStats([]); // Update with empty array on error
+      });
   }
 
   // Function to create a habit element
@@ -193,13 +333,19 @@ document.addEventListener("DOMContentLoaded", function () {
                       habit.description || ""
                     }</div>
                 </div>
-                <div class="habit-actions">
+               <div class="habit-actions">
+                    <button class="habit-action-btn habit-edit" data-id="${
+                      habit.id
+                    }">
+                     <i class="fas fa-pen"></i>
+                    </button>
                     <button class="habit-action-btn habit-delete" data-id="${
                       habit.id
                     }">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <i class="fas fa-trash"></i>
+                     </button>
                 </div>
+
             </div>
             <div class="streak-calendar">
                 ${streakCalendar}
@@ -217,9 +363,60 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Add event listener to delete button
     const deleteBtn = habitCard.querySelector(".habit-delete");
-    deleteBtn.addEventListener("click", function () {
-      deleteHabit(habit.id);
+    deleteBtn.addEventListener("click", () => {
+      if (localStorage.getItem("token")) {
+        fetch(`http://localhost:3001/habits/${habit.id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+          .then(() => {
+            fetchAndRenderHabits();
+            updateHabitStats();
+          })
+          .catch((err) => {
+            console.error("❌ Error deleting habit:", err);
+          });
+      } else {
+        const habits = window.appHelpers.getData("habits") || [];
+        const updated = habits.filter((h) => h.id !== habit.id);
+        window.appHelpers.saveData("habits", updated);
+        renderHabits(updated);
+        updateHabitStats(updated);
+      }
     });
+
+    const editBtn = habitCard.querySelector(".habit-edit");
+    editBtn.addEventListener("click", function (e) {
+      e.stopPropagation(); // عشان ما يفتح/يقفل الكارد
+
+      // خزّن الـ ID مؤقتًا
+      editHabitId = habit.id;
+
+      // عبّ البيانات في المودال
+      habitNameInput.value = habit.name;
+      habitDescInput.value = habit.description || "";
+      habitIconInput.value = habit.icon;
+
+      // فعّل الأيقونة المحددة
+      iconOptions.forEach((opt) => {
+        if (opt.getAttribute("data-icon") === habit.icon) {
+          opt.classList.add("selected");
+        } else {
+          opt.classList.remove("selected");
+        }
+      });
+
+      // غيّر نص الزر إذا حبيت
+      saveHabitBtn.textContent = "تحديث العادة";
+      addHabitModal.querySelector(".modal-header h3").textContent =
+        "تحديث العادة";
+
+      // أظهر المودال
+      addHabitModal.classList.add("active");
+    });
+
     habitCard.querySelector(".habit-header").onclick = () => {
       habitCard.classList.toggle("open");
     };
@@ -380,35 +577,122 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to toggle habit completion
+  // --- In habits.js ---
+
+  // Function to toggle habit completion
   function toggleHabitCompletion(habitId, dateStr) {
-    // Get habits from localStorage
-    const habits = window.appHelpers.getData("habits") || [];
+    // Find the clicked circle element to update UI optimistically
+    const habitCard = document.querySelector(
+      `.habit-card[data-id="${habitId}"]`
+    );
+    const circle = habitCard?.querySelector(
+      `.day-circle[data-date="${dateStr}"]`
+    );
+    if (!circle) return; // Safety check
 
-    // Find habit by id
-    const habitIndex = habits.findIndex((h) => h.id === habitId);
-    if (habitIndex === -1) return;
+    // Determine the *intended* new state based on current classes
+    const isCurrentlyCompleted = circle.classList.contains("completed");
+    const intendedNewState = !isCurrentlyCompleted; // true for complete, false for uncomplete
 
-    const habit = habits[habitIndex];
-
-    // Toggle completion status
-    if (!habit.completionLog) {
-      habit.completionLog = {};
+    // --- Optimistic UI Update ---
+    // Immediately toggle the visual state for instant feedback
+    circle.classList.toggle("completed", intendedNewState);
+    circle.classList.remove("missed"); // Remove missed if toggling to complete
+    if (
+      !intendedNewState &&
+      new Date(dateStr) < new Date(new Date().setHours(0, 0, 0, 0))
+    ) {
+      // If toggling off for a *past* date, mark it as missed
+      circle.classList.add("missed");
     }
+    // --- End Optimistic UI Update ---
 
-    habit.completionLog[dateStr] = !habit.completionLog[dateStr];
+    if (localStorage.getItem("token")) {
+      // ✅ مستخدم مسجل → إرسال لـ backend (Unified Endpoint)
+      fetch(`http://localhost:3001/habits/${habitId}/toggle/${dateStr}`, {
+        // Use the new endpoint
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        // No body needed as info is in the URL
+      })
+        .then(async (res) => {
+          // Make async to parse error JSON
+          if (!res.ok) {
+            const errorData = await res
+              .json()
+              .catch(() => ({ message: "فشل في التحديث" }));
+            throw new Error(
+              errorData.message || `فشل في التحديث (${res.status})`
+            );
+          }
+          return res.json(); // Return the parsed JSON data
+        })
+        .then((data) => {
+          // data contains the updated habit
+          console.log("Habit toggled successfully via API", data);
+          // Refresh the specific card or the whole list less disruptively
+          // Option 1: Refresh whole list (simpler but might cause flicker)
+          fetchAndRenderHabits(); // Keep this for simplicity for now
+          updateHabitStats();
 
-    // Update streak
-    updateHabitStreak(habit);
+          // Option 2 (More Advanced): Update only the affected card using data.habit
+          // This avoids full re-render flicker but requires more complex logic
+          // updateSingleHabitCard(data.habit);
+        })
+        .catch((err) => {
+          console.error("❌ فشل في تحديث الإنجاز:", err);
+          alert(`فشل في تحديث حالة اليوم: ${err.message}`);
+          // --- Revert Optimistic UI Update on Error ---
+          circle.classList.toggle("completed", !intendedNewState); // Toggle back
+          circle.classList.remove("missed"); // Clear potential missed state
+          if (
+            isCurrentlyCompleted &&
+            new Date(dateStr) < new Date(new Date().setHours(0, 0, 0, 0))
+          ) {
+            // If it WAS completed and is a past date, mark it missed again? Or just revert? Reverting is safer.
+          }
+          if (
+            !isCurrentlyCompleted &&
+            new Date(dateStr) < new Date(new Date().setHours(0, 0, 0, 0))
+          ) {
+            // If it WAS NOT completed and is a past date, mark it missed
+            circle.classList.add("missed");
+          }
+          // --- End Revert ---
+        });
+    } else {
+      // --- 🟡 زائر → localStorage --- (Logic remains similar)
+      const habits = getFilteredLocalHabits(); // Use the filtering function
+      const habitIndex = habits.findIndex(
+        (h) =>
+          String(h.id) === String(habitId) || String(h._id) === String(habitId)
+      ); // Check both id and _id
+      if (habitIndex === -1) {
+        console.error("Guest habit not found for ID:", habitId);
+        // Revert optimistic UI if habit not found
+        circle.classList.toggle("completed", !intendedNewState);
+        return;
+      }
 
-    // Save updated habits
-    habits[habitIndex] = habit;
-    window.appHelpers.saveData("habits", habits);
+      const habit = habits[habitIndex];
+      if (!habit.completionLog) habit.completionLog = {};
 
-    // Re-render habits
-    renderHabits(habits);
+      // Toggle status in local data
+      habit.completionLog[dateStr] = intendedNewState; // Set based on intended state
 
-    // Update stats
-    updateHabitStats();
+      // Recalculate streak based on local data
+      updateHabitStreak(habit);
+      habits[habitIndex] = habit;
+      window.appHelpers.saveData("habits", habits); // Ensure appHelpers exists or replace with direct localStorage
+
+      // Re-render immediately reflects the change
+      // Instead of full re-render, could update just the one card for better UX
+      renderHabits(habits); // Keep for simplicity
+      updateHabitStats(habits);
+    }
   }
 
   // Function to update habit streak
@@ -474,23 +758,41 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to update habit stats
-  function updateHabitStats() {
-    const habits = window.appHelpers.getData("habits") || [];
+  // --- In habits.js ---
+
+  // Function to update habit stats
+  // function updateHabitStats() {                                // OLD Definition
+  //   const habits = window.appHelpers.getData("habits") || [];  // REMOVE THIS LINE
+
+  function updateHabitStats(habits = []) {
+    // NEW Definition - Accepts habits array
+    // Ensure habits is always an array
+    if (!Array.isArray(habits)) {
+      console.warn("updateHabitStats received non-array:", habits);
+      habits = [];
+    }
 
     // Calculate weekly completion percentage across all habits
     let totalCompletions = 0;
-    let totalPossible = 0;
+    let totalPossibleCompletions = 0; // Renamed for clarity
 
     // Find longest streak across all habits
     let maxStreak = 0;
 
     habits.forEach((habit) => {
+      // Ensure habit object is valid and has necessary properties
+      if (!habit || typeof habit !== "object") return;
+      if (typeof habit.completionLog !== "object") habit.completionLog = {};
+      if (typeof habit.longestStreak !== "number") habit.longestStreak = 0;
+
       // Add to weekly completion calculation
-      const completionPercentage = calculateCompletionPercentage(habit);
-      totalCompletions += completionPercentage;
-      totalPossible += 100;
+      const { completedCount, possibleCount } =
+        calculateCompletionCounts(habit); // Use helper
+      totalCompletions += completedCount;
+      totalPossibleCompletions += possibleCount;
 
       // Update max streak
+      // Use habit.longestStreak directly as it should be calculated on backend/local save
       if (habit.longestStreak > maxStreak) {
         maxStreak = habit.longestStreak;
       }
@@ -498,8 +800,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Calculate overall weekly completion
     const weeklyCompletion =
-      totalPossible > 0
-        ? Math.round((totalCompletions / totalPossible) * 100)
+      totalPossibleCompletions > 0
+        ? Math.round((totalCompletions / totalPossibleCompletions) * 100)
         : 0;
 
     // Update stats display
@@ -508,11 +810,51 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (longestStreakEl) {
-      longestStreakEl.textContent = `${maxStreak} أيام`;
+      // Ensure maxStreak is a valid number
+      longestStreakEl.textContent = `${!isNaN(maxStreak) ? maxStreak : 0} أيام`;
     }
 
     if (activeHabitsEl) {
+      // Display count. The "/5" limit might only apply to guests?
+      // Decide if you want to show the limit for logged-in users too.
+      // For now, keep the "/5" for guests, show only count for logged-in.
+      // OR just show count always:
+      // activeHabitsEl.textContent = `${habits.length}`;
+      // OR keep original:
       activeHabitsEl.textContent = `${habits.length}/5`;
     }
+  }
+
+  // Helper function to calculate completions for the last 7 days for ONE habit
+  // (Extracted from old calculateCompletionPercentage logic for clarity)
+  function calculateCompletionCounts(habit) {
+    const days = 7;
+    let completedCount = 0;
+    let possibleCount = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const habitStartDate = habit.createdAt
+      ? new Date(habit.createdAt)
+      : new Date(0); // Handle missing createdAt
+    habitStartDate.setHours(0, 0, 0, 0);
+
+    if (!habit.completionLog) habit.completionLog = {};
+
+    for (let i = 0; i < days; i++) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+
+      // Skip days before habit was created
+      if (date < habitStartDate) {
+        continue;
+      }
+
+      possibleCount++; // This day is a possible day to complete
+      const dateStr = date.toISOString().split("T")[0];
+      if (habit.completionLog[dateStr] === true) {
+        completedCount++;
+      }
+    }
+    return { completedCount, possibleCount };
   }
 });

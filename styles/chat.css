@@ -25,6 +25,7 @@ body {
   padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 
 /* Individual Message Styling */

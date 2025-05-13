@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>رفيق - ابدأ رحلتك</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- // this script is to check if the user is logged in and redirect them to the index page with token -->
+    <script>
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split(".")[1]));
+          const now = Math.floor(Date.now() / 1000);
+
+          if (payload.exp && payload.exp > now) {
+            // ✅ التوكن لا زال ساري
+            window.location.href = "main.html"; // يدخل مباشرة
+          } else {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+          }
+        } catch (e) {
+          console.error("فشل تحليل التوكن:", e);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        }
+      }
+    </script>
+
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --primary-dark: #2980b9;
+        --secondary-color: #0ea5e9;
+        --accent-color: #6366f1;
+        --success-color: #10b981;
+        --error-color: #ef4444;
+        --text-color: #1e293b;
+        --text-light: #64748b;
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        --gradient: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+      }
+
+      body {
+        font-family: "Cairo", sans-serif;
+        background-color: var(--bg-color);
+        background-image: radial-gradient(#e0f2fe 1px, transparent 1px),
+          radial-gradient(#e0f2fe 1px, transparent 1px);
+        background-size: 40px 40px;
+        background-position: 0 0, 20px 20px;
+        margin: 0;
+        color: var(--text-color);
+      }
+
+      .navbar {
+        background: var(--card-bg);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: var(--card-shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        animation: slideDown 0.6s forwards;
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        height: 40px;
+        margin-left: 10px;
+        transition: transform 0.3s ease;
+      }
+
+      .logo:hover {
+        transform: scale(1.1);
+      }
+
+      .brand-name {
+        font-weight: bold;
+        font-size: 1.5rem;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        /* color: var(--primary-color); */
+        font-weight: 600;
+        margin: 0 0.8rem;
+        position: relative;
+        padding: 5px 2px;
+      }
+
+      .nav-links a:after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--primary-color);
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:hover:after {
+        width: 100%;
+      }
+
+      .nav-button {
+        background: var(--gradient);
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          rgba(255, 255, 255, 0.2),
+          rgba(255, 255, 255, 0)
+        );
+        transform: translateY(-50%);
+        transition: transform 0.6s ease;
+      }
+
+      .nav-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+      }
+
+      .nav-button:hover::after {
+        transform: translateY(0);
+      }
+
+      .hero {
+        background: var(--gradient);
+        color: white;
+        padding: 8rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z' fill='rgba(255,255,255,0.05)'/%3E%3C/svg%3E");
+        opacity: 0.8;
+      }
+
+      .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 0.8s forwards;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .hero-highlight {
+        /* color: #fff700; */
+        position: relative;
+        display: inline-block;
+      }
+
+      .hero-highlight::after {
+        content: "";
+        position: absolute;
+        bottom: 5px;
+        left: 0;
+        width: 100%;
+        height: 8px;
+        background-color: rgb(255 255 255 / 30%);
+        z-index: -1;
+        transform: skew(-15deg);
+      }
+
+      .hero p {
+        font-size: 1.4rem;
+        margin-bottom: 2.5rem;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+        opacity: 0;
+        animation: fadeInUp 0.8s 0.2s forwards;
+      }
+
+      .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        opacity: 0;
+        animation: fadeInUp 0.8s 0.4s forwards;
+      }
+
+      .btn {
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          rgba(255, 255, 255, 0.2),
+          rgba(255, 255, 255, 0)
+        );
+        transform: translateY(-50%);
+        transition: transform 0.6s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-5px);
+      }
+
+      .btn:hover::after {
+        transform: translateY(0);
+      }
+
+      .btn-primary {
+        background-color: white;
+        color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+      }
+
+      .btn-primary:hover {
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
+      }
+
+      .btn-outline {
+        border: 2px solid white;
+        color: white;
+      }
+
+      .btn-outline:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .features {
+        padding: 8rem 2rem;
+        background: var(--card-bg);
+      }
+
+      .features h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-color);
+        position: relative;
+        display: inline-block;
+        right: 50%;
+        transform: translateX(50%);
+      }
+
+      .features h2::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--gradient);
+        border-radius: 2px;
+      }
+
+      .features-container {
+        max-width: 1200px;
+        margin: 4rem auto 0;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+      }
+
+      .feature-card {
+        background: var(--card-bg);
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.4s ease;
+        position: relative;
+        top: 0;
+        border-top: 4px solid transparent;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.4s ease;
+      }
+
+      .feature-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        top: -10px;
+      }
+
+      .feature-card:hover::before {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      .feature-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+        position: relative;
+        padding-bottom: 0.5rem;
+      }
+
+      .feature-card h3::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background: var(--gradient);
+        border-radius: 1.5px;
+      }
+
+      .feature-card p {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        line-height: 1.6;
+      }
+
+      .cta {
+        background: var(--gradient);
+        color: white;
+        padding: 8rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zm-24.596 0L12.115 6.485 13.53 7.9l7.9-7.9h-2.83zm16.728 0L41.544 7.1 40.13 8.516l-9.9-9.9h2.83zm-8.86 0l-7.1 7.1 1.415 1.414 9.9-9.9h-2.828zM0 5.216l1.414 1.414L7.1 0h-2.83L0 5.215zm0 5.657l2.828 2.83L5.657 10.9 0 5.244v5.63z' fill='rgba(255,255,255,0.05)' fill-rule='evenodd'/%3E%3C/svg%3E");
+      }
+
+      .cta-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+      }
+
+      .cta h2 {
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+      }
+
+      .cta p {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+      }
+
+      .cta-btn {
+        background-color: white;
+        color: var(--primary-color);
+        padding: 1.2rem 3rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+      }
+
+      .cta-btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          rgba(255, 255, 255, 0.2),
+          rgba(255, 255, 255, 0)
+        );
+        transform: translateY(-50%);
+        transition: transform 0.6s ease;
+      }
+
+      .cta-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .cta-btn:hover::after {
+        transform: translateY(0);
+      }
+
+      .footer {
+        background: var(--card-bg);
+        padding: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .footer-links a {
+        text-decoration: none;
+        color: var(--primary-color);
+        font-weight: 600;
+        margin: 0 1rem;
+        position: relative;
+      }
+
+      .footer-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--primary-color);
+        transition: width 0.3s ease;
+      }
+
+      .footer-links a:hover::after {
+        width: 100%;
+      }
+
+      .copyright {
+        color: var(--text-light);
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+        .hero p {
+          font-size: 1.1rem;
+        }
+        .features-grid {
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        .cta h2 {
+          font-size: 2.2rem;
+        }
+        .footer {
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+
+      /* Animation for cards */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .feature-card {
+        opacity: 0;
+        animation: fadeInUp 0.6s forwards;
+      }
+
+      .feature-card:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .feature-card:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .feature-card:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .feature-card:nth-child(4) {
+        animation-delay: 0.4s;
+      }
+      .feature-card:nth-child(5) {
+        animation-delay: 0.5s;
+      }
+      .feature-card:nth-child(6) {
+        animation-delay: 0.6s;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo-container">
+        <img src="icon.png" alt="Logo" class="logo" />
+        <span class="brand-name">رفيق</span>
+      </div>
+      <div class="nav-links">
+        <a href="login.html">تسجيل الدخول</a>
+        <a href="register.html" class="nav-button">إنشاء حساب</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-content">
+        <h1>
+          ابدأ رحلة تعافيك اليوم مع <span class="hero-highlight">رفيق</span>
+        </h1>
+        <p>
+          تطبيق داعم يساعدك في التعافي من إدمان المواد الإباحية وتحقيق أهدافك في
+          إعادة بناء حياة صحية وأكثر إشراقًا.
+        </p>
+        <div class="btn-group">
+          <a
+            href="main.html"
+            class="btn btn-primary"
+            onclick="localStorage.setItem('guest', 'true')"
+            >الدخول كزائر</a
+          >
+          <a href="login.html" class="btn btn-outline">تسجيل الدخول</a>
+          <br />
+          <p style="font-size: 17px">
+            وضع الزائر يخزن المعلومات عالجهاز فقط وممكن أداء الموقع يقل لو زاد
+            حجم البيانات المخزنة. مع تسجيل الدخول تستطيع الدخول على رفيق
+            ومزامنته مع جميع أجهزتك
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <h2>مميزات تدعم رحلة تعافيك</h2>
+      <div class="features-container">
+        <div class="features-grid">
+          <div class="feature-card">
+            <h3>تتبع العادات</h3>
+            <p>
+              تابع تقدمك وبناء عاداتك الإيجابية بسهولة من خلال أدوات التتبع
+              المخصصة.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>مذكرات التعافي</h3>
+            <p>دوّن أفكارك ومشاعرك في مذكرة خاصة لتتبع رحلتك نحو التعافي.</p>
+          </div>
+          <div class="feature-card">
+            <h3>مؤقت التعافي</h3>
+            <p>احتفل بإنجازاتك مع عداد يسجل أيام نجاحك في رحلة التعافي.</p>
+          </div>
+          <div class="feature-card">
+            <h3>وثيقة الالتزام</h3>
+            <p>اكتب تعهدًا شخصيًا يعزز التزامك بمواصلة رحلة التعافي.</p>
+          </div>
+          <div class="feature-card">
+            <h3>ذكاء اصطناعي يرافقك في رحلة تعافيك</h3>
+            <p>رفيق يقدم لك نصائح ودعمًا مخصصًا بناءً على احتياجاتك وتقدمك</p>
+          </div>
+          <div class="feature-card">
+            <h3>خصوصية مطلقة</h3>
+            <p>نحن نضمن لك أقصى درجات الخصوصية والأمان لبياناتك الشخصية.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="cta-content">
+        <h2>حان الوقت لبدء رحلة التعافي</h2>
+        <p>
+          انضم إلى الآلاف ممن نجحوا في التغلب على إدمان المواد الإباحية واستعادة
+          حياتهم الصحية.
+        </p>
+        <a href="register.html" class="cta-btn">ابدأ رحلتك الآن</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="copyright">© 2025 رفيق - جميع الحقوق محفوظة</div>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/abdulazizalharthi/" target="_blank"
+          ><i class="fa-brands fa-linkedin" style="font-size: 27px"></i
+        ></a>
+        <a href="https://wa.me/966559324523" target="_blank"
+          ><i class="fa-brands fa-whatsapp" style="font-size: 27px"></i
+        ></a>
+      </div>
+    </footer>
+
+    <script>
+      // Check if the page is visible to trigger animations
+      document.addEventListener("DOMContentLoaded", function () {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = "running";
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        // Observe all feature cards
+        document.querySelectorAll(".feature-card").forEach((card) => {
+          card.style.animationPlayState = "paused";
+          observer.observe(card);
+        });
+      });
+    </script>
+  </body>
+</html>
